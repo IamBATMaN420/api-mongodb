@@ -29,7 +29,7 @@ app.post("/api/products", (req, res) => {
     return res.status(201).json(product)
   }).catch((error) => {
     return res.status(501).json({
-      "error": error.messages
+      "error": error.message
     })
   })
 })
