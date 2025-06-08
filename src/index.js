@@ -56,11 +56,8 @@ app.post("/api/products", async (req, res) => {
       return res.status(422).json({
         "error": "catagory feild is not given"
       })
-    } else if (!product.schema.path("catagory").enumValues.includes(req.body.catagory)) {
-      return res.status(422).json({
-        "error": "catagory must be in the feild"
-      })
-    } 
+    }
+
     const product = await productsModels.create(req.body)
     res.status(201).json(product)
   }
@@ -72,4 +69,23 @@ app.post("/api/products", async (req, res) => {
   }
 })
 
+app.get("/api/products", async (req, res) => {
+  try {
+    const product = await productsModels.find().select("_id name price")
+    return res.status(201).json(product)
+  } catch (error) {
+    console.log(`error while getiing the data `, error)
+  }
+})
+
+app.get("/api/products/:id", async (req, res) => {
+  try {
+    const product = await productsModels.findById(req.params.id)
+    return res.status(201).json(product)
+  } catch (error) {
+    console.log(`error while getiing the data `, error)
+  }
+})
+
+app.put()
 
