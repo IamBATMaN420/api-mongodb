@@ -24,14 +24,15 @@ mongoose.connection.on("error", (error) => {
   console.log("error is ", error)
 })
 
-app.post("/api/products", (req, res) => {
-  productsModels.create(req.body).then((product) => {
-    return res.status(201).json(product)
-  }).catch((error) => {
+app.post("/api/products", async (req, res) => {
+  try {
+    const product = await productsModels.create(req.body)
+    res.status(201).json(product)
+  } catch (error) {
     return res.status(501).json({
       "error": error.message
     })
-  })
+  }
 })
 
 
