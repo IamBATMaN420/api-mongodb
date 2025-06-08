@@ -1,11 +1,37 @@
 import express from "express";
+import mongoose from "mongoose";
+import dotenv from "dotenv"
+import productsModels from "./models/productsModels.js";
+dotenv.config()
 
 const app = express()
 
+app.use(express.json())
 
-app.get()
+const mongoURI = process.env.mongo_string_url
 
-app.listen(5000, () => {
-  console.log(`server is running on 5000`)
+mongoose.connect(mongoURI)
+
+mongoose.connection.on("connected", () => {
+  console.log(`Mongo Db is connected`)
+  app.listen(5000, () => {
+    console.log(`server is running on 5000`)
+  })
 })
+
+
+mongoose.connection.on("error", (error) => {
+  console.log("error is ", error)
+})
+
+app.post("/api/products", (req, res) => {
+  productsModels.create(req.body).then((product) => {
+    return res.status(201).json(product)
+  }).catch((error) => {
+    return res.status(501).json({
+      "error": error.messages
+    })
+  })
+})
+
 
