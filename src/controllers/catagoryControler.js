@@ -52,9 +52,15 @@ export const getCatgoryById = async (req, res) => {
   }
 }
 
-const updateCatagory = (req, res) => {
+export const updateCatagory = async (req, res) => {
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    return res.status(404).jdon({
+      "error":"galat mongo ID hain bhai"
+    })
+  }
   try {
-
+    const updatedCatagory = await catagoryModels.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    return res.status(201).json(updateCatagory)
   } catch (error) {
     return res.status(404).json({
       "error": error.message
