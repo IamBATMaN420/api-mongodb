@@ -17,6 +17,24 @@ export const createCatagory = async (req, res) => {
   }
 }
 
-const getAllCatagory = async(req, res) => {
+export const getAllCatagory = async (req, res) => {
   
+  try {
+    const catagory = catagoryModels.find().select("id name")
+    return res.status(201).json(catagory)
+  } catch (error) {
+    return res.status(500).json({
+      "error": error.message
+    })
+  }
+}
+
+export const getCatgoryById = async(req,res) => {
+  try {
+    
+  } catch (error) {
+    return res.status(500).json({
+      "error":error.message
+    })
+  }
 }
