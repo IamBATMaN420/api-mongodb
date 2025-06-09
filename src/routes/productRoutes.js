@@ -2,7 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv"
 import productsModels from "../models/productsModels.js";
-import { createProducts, getProductsById, gettingProducts } from "../controllers/productsControler.js";
+import { createProducts, getProducts, getProductsById, updateProduct } from "../controllers/productsControler.js";
 
 dotenv.config()
 const app = express()
@@ -13,35 +13,14 @@ app.use(express.json())
 router.post("/", createProducts)
 
 // get -> getting(reading all products)
-router.get("/", gettingProducts)
+router.get("/", getProducts)
 
 // get product by id
 router.get("/:id", getProductsById)
 
 
 // put -> updating the product by id
-router.put("/:id", async (req, res) => {
-  if (!mongoose.isValidObjectId(req.params.id)) {
-    return res.status(422).json({
-      "error": "Invalid Mongo ID"
-    })
-  }
-  if (!await product.exists({ _id: req.params.id })) {
-    return res.status(422).json({
-      "error": "Invalid product ID"
-    })
-  }
-  try {
-    const product = await productsModels.findByIdAndUpdate(req.params.id, req.body, { new: true })
-    res.status(201).json({
-      product
-    })
-  } catch (error) {
-    return res.status(422).json({
-      "error": error.message
-    })
-  }
-})
+router.put("/:id", updateProduct)
 
 // delete -> delete by id
 router.delete("/:id", async (req, res) => {

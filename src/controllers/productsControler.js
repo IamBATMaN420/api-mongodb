@@ -64,3 +64,26 @@ export const getProductsById=async (req, res) => {
     })
   }
 }
+
+export const updateProduct= async (req, res) => {
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    return res.status(422).json({
+      "error": "Invalid Mongo ID"
+    })
+  }
+  if (!await product.exists({ _id: req.params.id })) {
+    return res.status(422).json({
+      "error": "Invalid product ID"
+    })
+  }
+  try {
+    const product = await productsModels.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    res.status(201).json({
+      product
+    })
+  } catch (error) {
+    return res.status(422).json({
+      "error": error.message
+    })
+  }
+}
