@@ -1,5 +1,6 @@
 import catagoryModels from "../models/catagoryModels.js";
 import express from "express"
+import mongoose from "mongoose";
 const app = express()
 app.use(express.json())
 export const createCatagory = async (req, res) => {
@@ -31,11 +32,31 @@ export const getAllCatagory = async (req, res) => {
 }
 
 export const getCatgoryById = async (req, res) => {
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    return res.status(404).json({
+      "error": "invalid mongo ID"
+    })
+  }
   try {
     const catagory = await catagoryModels.findById(req.params.id).select('-__v')
+    if (!catagory) {
+      return res, status(404).json({
+        "error": "bhai catagory nai"
+      })
+    }
     return res.status(201).json(catagory)
   } catch (error) {
     return res.status(500).json({
+      "error": error.message
+    })
+  }
+}
+
+const updateCatagory = (req, res) => {
+  try {
+
+  } catch (error) {
+    return res.status(404).json({
       "error": error.message
     })
   }
