@@ -43,9 +43,20 @@ export const createProducts = async (req, res) => {
   }
 }
 
-export const gettingProducts = async (req, res) => {
+export const getProducts = async (req, res) => {
   try {
     const product = await productsModels.find().select("_id name price")
+    return res.status(201).json(product)
+  } catch (error) {
+    return res.status(422).json({
+      "error": "Invalid product ID"
+    })
+  }
+}
+
+export const getProductsById=async (req, res) => {
+  try {
+    const product = await productsModels.findById(req.params.id)
     return res.status(201).json(product)
   } catch (error) {
     return res.status(422).json({

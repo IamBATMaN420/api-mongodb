@@ -2,7 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv"
 import productsModels from "../models/productsModels.js";
-import { createProducts, gettingProducts } from "../controllers/productsControler.js";
+import { createProducts, getProductsById, gettingProducts } from "../controllers/productsControler.js";
 
 dotenv.config()
 const app = express()
@@ -16,16 +16,7 @@ router.post("/", createProducts)
 router.get("/", gettingProducts)
 
 // get product by id
-router.get("/:id", async (req, res) => {
-  try {
-    const product = await productsModels.findById(req.params.id)
-    return res.status(201).json(product)
-  } catch (error) {
-    return res.status(422).json({
-      "error": "Invalid product ID"
-    })
-  }
-})
+router.get("/:id", getProductsById)
 
 
 // put -> updating the product by id
