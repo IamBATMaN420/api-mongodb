@@ -87,5 +87,14 @@ app.get("/api/products/:id", async (req, res) => {
   }
 })
 
-app.put()
+app.put("/api/products/:id", async (req, res) => {
+  try {
+    const product = await productsModels.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    res.status(201).json({
+      product
+    })
+  } catch (error) {
+    console.log(`error while getiing the data `, error)
+  }
+})
 
