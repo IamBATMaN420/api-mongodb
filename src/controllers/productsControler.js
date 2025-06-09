@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import productsModels from "../models/productsModels.js";
 import express from "express"
+import catagoryModels from "../models/catagoryModels.js";
 const app = express()
 app.use(express.json())
 export const createProducts = async (req, res) => {
@@ -35,10 +36,13 @@ export const createProducts = async (req, res) => {
       return res.status(422).json({
         "error": "catagory feild is not given"
       })
+    } else if (!await catagoryModels.findById(req.body.catagory)) {
+      return res.status(422).json({
+        "error": "catagory feild is not  catagory DB"
+      })
     }
 
-    const product = await productsModels
-      .create(req.body)
+    const product = await productsModels.create(req.body)
     res.status(201).json(product)
   }
 
@@ -51,8 +55,11 @@ export const createProducts = async (req, res) => {
 
 export const getProducts = async (req, res) => {
   try {
-    const product = await productsModels.find()
-    return res.status(201).json(product)
+    const products = await productsModels.find()
+      .select("-__v")
+      .populate({ path: "catagory", select: "_id name" })
+    
+    return res.status(200).json(products)
   } catch (error) {
     return res.status(422).json({
       "error": "Invalid product ID"
