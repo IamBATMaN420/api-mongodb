@@ -22,8 +22,9 @@ const productSchema = new mongoose.Schema({
     default: true
   },
   catagory: {
-    type: String,
-    enum: ["food", "electronics", "vegetable"]
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "catagoryModel",
+    default: true
   },
 }, {
   timestamps: true,
