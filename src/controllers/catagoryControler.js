@@ -55,12 +55,40 @@ export const getCatgoryById = async (req, res) => {
 export const updateCatagory = async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(404).jdon({
-      "error":"galat mongo ID hain bhai"
+      "error": "galat mongo ID hain bhai"
     })
   }
   try {
     const updatedCatagory = await catagoryModels.findByIdAndUpdate(req.params.id, req.body, { new: true })
-    return res.status(201).json(updateCatagory)
+    return res.status(201).json(updatedCatagory)
+  } catch (error) {
+    return res.status(404).json({
+      "error": error.message
+    })
+  }
+}
+
+export const deleteCatagory = async (req, res) => {
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    return res.status(422).json({
+      "error": "mongo id invalid"
+    })
+  }
+  try {
+    const catagory = await catagoryModels.findById(req.params.id)
+    if (!catagory) {
+      return res.status(422).json({
+        "error": "catagory not found"
+      })
+    }
+    else {
+      await catagory.deleteOne()
+    }
+
+    return res.status(201).json({
+      "message": "product deleted succesfully"
+    })
+
   } catch (error) {
     return res.status(404).json({
       "error": error.message
