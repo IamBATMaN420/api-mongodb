@@ -1,6 +1,7 @@
 import catagoryModels from "../models/catagoryModels.js";
 import express from "express"
 import mongoose from "mongoose";
+import productsModels from "../models/productsModels.js";
 const app = express()
 app.use(express.json())
 export const createCatagory = async (req, res) => {
@@ -72,12 +73,13 @@ export const updateCatagory = async (req, res) => {
 }
 
 export const deleteCatagory = async (req, res) => {
-  if (!mongoose.isValidObjectId(req.params.id)) {
-    return res.status(422).json({
-      "error": "mongo id invalid"
-    })
-  }
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(422).json({
+        "error": "mongo id invalid"
+      })
+    }
+
     const catagory = await catagoryModels.findById(req.params.id)
     if (!catagory) {
       return res.status(422).json({
@@ -85,6 +87,15 @@ export const deleteCatagory = async (req, res) => {
       })
     }
     else {
+      const productCount = await productsModels.countDocuments({ catagory: catagory._id })
+
+      if (productCount > 0) {
+        return res.status(409).json({
+          error: `${catagory.name} is being in use in ${productCount}'s use`
+        })
+      }
+
+
       await catagory.deleteOne()
     }
 
