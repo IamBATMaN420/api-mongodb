@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 import productsModels from "../models/productsModels.js";
+import express from "express"
+const app = express()
+app.use(express.json())
 export const createProducts = async (req, res) => {
   try {
 

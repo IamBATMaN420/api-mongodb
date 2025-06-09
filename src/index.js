@@ -25,4 +25,4 @@ mongoose.connection.on("error", (error) => {
 })
 
 app.use("/api/products", productRouter);
-app.use("/api/catagories", catagoryRouter)
+app.use("/api/catagory", catagoryRouter)

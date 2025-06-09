@@ -1,7 +1,8 @@
 import express from "express";
-import { createCatagory, getAllCatagory } from "../controllers/catagoryControler.js";
+import { createCatagory, getAllCatagory, getCatgoryById } from "../controllers/catagoryControler.js";
 
 const router = express.Router()
+
 
 router.post("/", createCatagory)
 router.get("/", getAllCatagory)

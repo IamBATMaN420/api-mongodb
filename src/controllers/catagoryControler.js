@@ -1,5 +1,7 @@
 import catagoryModels from "../models/catagoryModels.js";
-
+import express from "express"
+const app = express()
+app.use(express.json())
 export const createCatagory = async (req, res) => {
   try {
     if (!req.body.name) {
@@ -18,9 +20,8 @@ export const createCatagory = async (req, res) => {
 }
 
 export const getAllCatagory = async (req, res) => {
-  
   try {
-    const catagory = catagoryModels.find().select("id name")
+    const catagory = await catagoryModels.find().select("id name")
     return res.status(201).json(catagory)
   } catch (error) {
     return res.status(500).json({
@@ -29,12 +30,13 @@ export const getAllCatagory = async (req, res) => {
   }
 }
 
-export const getCatgoryById = async(req,res) => {
+export const getCatgoryById = async (req, res) => {
   try {
-    
+    const catagory = await catagoryModels.findById(req.params.id).select('-__v')
+    return res.status(201).json(catagory)
   } catch (error) {
     return res.status(500).json({
-      "error":error.message
+      "error": error.message
     })
   }
 }
