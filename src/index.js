@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv"
 import productsModels from "./models/productsModels.js";
+import { isFunction } from "node:util";
 dotenv.config()
 
 const app = express()
@@ -24,6 +25,7 @@ mongoose.connection.on("error", (error) => {
   console.log("error is ", error)
 })
 
+// post -> create products
 app.post("/api/products", async (req, res) => {
   try {
 
@@ -69,6 +71,7 @@ app.post("/api/products", async (req, res) => {
   }
 })
 
+// get -> getting(reading all products)
 app.get("/api/products", async (req, res) => {
   try {
     const product = await productsModels.find().select("_id name price")
@@ -78,6 +81,7 @@ app.get("/api/products", async (req, res) => {
   }
 })
 
+// get product by id
 app.get("/api/products/:id", async (req, res) => {
   try {
     const product = await productsModels.findById(req.params.id)
@@ -87,14 +91,59 @@ app.get("/api/products/:id", async (req, res) => {
   }
 })
 
+
+// put -> updating the product by id
 app.put("/api/products/:id", async (req, res) => {
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    return res.status(422).json({
+      "error": "Invalid Mongo ID"
+    })
+  }
+  if (!await product.exists({ _id: req.params.id })) {
+    return res.status(422).json({
+      "error": "Invalid product ID"
+    })
+  }
   try {
     const product = await productsModels.findByIdAndUpdate(req.params.id, req.body, { new: true })
     res.status(201).json({
       product
     })
   } catch (error) {
-    console.log(`error while getiing the data `, error)
+    return res.status(422).json({
+      "error": error.message
+    })
   }
 })
+
+// delete -> delete by id
+app.delete("/api/products/:id", async (req, res) => {
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    return res.status(422).json({
+      "error": "Invalid Mongo ID"
+    })
+  }
+  if (!await product.exists({ _id: req.params.id })) {
+    return res.status(422).json({
+      "error": "Invalid product ID"
+    })
+  }
+  try {
+    const product = await productsModels.findByIdAndDelete(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    return res.status(200).json({
+      message: "Product deleted successfully"
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      error: error.message
+    });
+  }
+});
+
 
