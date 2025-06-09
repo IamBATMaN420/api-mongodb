@@ -58,7 +58,7 @@ export const getProducts = async (req, res) => {
     const products = await productsModels.find()
       .select("-__v")
       .populate({ path: "catagory", select: "_id name" })
-    
+
     return res.status(200).json(products)
   } catch (error) {
     return res.status(422).json({
@@ -69,7 +69,9 @@ export const getProducts = async (req, res) => {
 
 export const getProductsById = async (req, res) => {
   try {
-    const product = await productsModels.findById(req.params.id).select("_id name price")
+    const product = await productsModels.findById(req.params.id)
+      .select("-__v")
+      .populate({ path: "catagory", select: "_id name" })
     return res.status(201).json(product)
   } catch (error) {
     return res.status(422).json({

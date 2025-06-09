@@ -10,6 +10,9 @@ export const createCatagory = async (req, res) => {
         "message": "name feild is required"
       })
     }
+    if (await catagoryModels.exists({ name: req.body.name })) {
+      return res.status(409).json({ error: `${req.body.name} already exists` })
+    }
     const newCatagory = await catagoryModels.create(req.body)
     return res.status(201).json(newCatagory)
 
