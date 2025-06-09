@@ -1,72 +1,22 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv"
-import productsModels from "./models/productsModels.js";
+import productsModels from "../models/productsModels.js";
+import { createProducts, gettingProducts } from "../controllers/productsControler.js";
 
 dotenv.config()
 const app = express()
 const router = express.Router()
 app.use(express.json())
 
-router.post("/api/products", async (req, res) => {
-  try {
-
-    if (!req.body.name) {
-      return res.status(422).json({
-        "error": "name feild is not given"
-      })
-    }
-    if (!req.body.description) {
-      return res.status(422).json({
-        "error": "description feild is not given"
-      })
-    }
-    if (!req.body.price) {
-      return res.status(422).json({
-        "error": "price feild is not given"
-      })
-    }
-    if (!req.body.quantity) {
-      return res.status(422).json({
-        "error": "quantity feild is not given"
-      })
-    }
-    if (!req.body.active) {
-      return res.status(422).json({
-        "error": "active feild is not given"
-      })
-    }
-    if (!req.body.catagory) {
-      return res.status(422).json({
-        "error": "catagory feild is not given"
-      })
-    }
-
-    const product = await productsModels.create(req.body)
-    res.status(201).json(product)
-  }
-
-  catch (error) {
-    return res.status(501).json({
-      "error": error.message
-    })
-  }
-})
+// post -> create products
+router.post("/", createProducts)
 
 // get -> getting(reading all products)
-router.get("/api/products", async (req, res) => {
-  try {
-    const product = await productsModels.find().select("_id name price")
-    return res.status(201).json(product)
-  } catch (error) {
-    return res.status(422).json({
-      "error": "Invalid product ID"
-    })
-  }
-})
+router.get("/", gettingProducts)
 
 // get product by id
-router.get("/api/products/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const product = await productsModels.findById(req.params.id)
     return res.status(201).json(product)
@@ -79,7 +29,7 @@ router.get("/api/products/:id", async (req, res) => {
 
 
 // put -> updating the product by id
-router.put("/api/products/:id", async (req, res) => {
+router.put("/:id", async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(422).json({
       "error": "Invalid Mongo ID"
@@ -103,7 +53,7 @@ router.put("/api/products/:id", async (req, res) => {
 })
 
 // delete -> delete by id
-router.delete("/api/products/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(422).json({
       "error": "Invalid Mongo ID"
@@ -133,3 +83,4 @@ router.delete("/api/products/:id", async (req, res) => {
 });
 
 
+export default router;

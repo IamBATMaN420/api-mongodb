@@ -1,12 +1,10 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv"
-import productsModels from "./models/productsModels.js";
+import router from "./routes/productRoutes.js";
 
 dotenv.config()
-
 const app = express()
-
 app.use(express.json())
 
 const mongoURI = process.env.mongo_string_url
@@ -25,4 +23,4 @@ mongoose.connection.on("error", (error) => {
   console.log("error is ", error)
 })
 
-// post -> create products
+app.use("/api/products", router);
