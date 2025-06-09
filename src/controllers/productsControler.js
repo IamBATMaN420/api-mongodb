@@ -80,6 +80,18 @@ export const getProductsById = async (req, res) => {
   }
 }
 
+export const getProductByCatagory = async (req, res) => {
+  try {
+
+    const product = await productsModels.find({ catagory: req.params.catagoryId })
+    return res.status(201).json(product)
+  } catch (error) {
+    return res.status(422).json({
+      "error": "Invalid product ID"
+    })
+  }
+}
+
 export const updateProduct = async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(422).json({
