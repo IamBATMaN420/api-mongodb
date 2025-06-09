@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+import productsModels from "../models/productsModels.js";
 export const createProducts = async (req, res) => {
   try {
 
@@ -32,7 +34,8 @@ export const createProducts = async (req, res) => {
       })
     }
 
-    const product = await productsModels.create(req.body)
+    const product = await productsModels
+      .create(req.body)
     res.status(201).json(product)
   }
 
@@ -45,7 +48,7 @@ export const createProducts = async (req, res) => {
 
 export const getProducts = async (req, res) => {
   try {
-    const product = await productsModels.find().select("_id name price")
+    const product = await productsModels.find()
     return res.status(201).json(product)
   } catch (error) {
     return res.status(422).json({
@@ -54,9 +57,9 @@ export const getProducts = async (req, res) => {
   }
 }
 
-export const getProductsById=async (req, res) => {
+export const getProductsById = async (req, res) => {
   try {
-    const product = await productsModels.findById(req.params.id)
+    const product = await productsModels.findById(req.params.id).select("_id name price")
     return res.status(201).json(product)
   } catch (error) {
     return res.status(422).json({
@@ -65,7 +68,7 @@ export const getProductsById=async (req, res) => {
   }
 }
 
-export const updateProduct= async (req, res) => {
+export const updateProduct = async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(422).json({
       "error": "Invalid Mongo ID"
@@ -85,5 +88,34 @@ export const updateProduct= async (req, res) => {
     return res.status(422).json({
       "error": error.message
     })
+  }
+}
+
+export const deleteProduct = async (req, res) => {
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    return res.status(422).json({
+      "error": "Invalid Mongo ID"
+    })
+  }
+  if (!await product.exists({ _id: req.params.id })) {
+    return res.status(422).json({
+      "error": "Invalid product ID"
+    })
+  }
+  try {
+    const product = await productsModels.findByIdAndDelete(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    return res.status(200).json({
+      message: "Product deleted successfully"
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      error: error.message
+    });
   }
 }
